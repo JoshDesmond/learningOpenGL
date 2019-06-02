@@ -16,12 +16,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # GLFW
 find_package(libglfw3 REQUIRED)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${GLFW_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${GLFW_LIBRARY})
+
+# OpenGL
 find_package(OpenGL REQUIRED)
+target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${GLFW_INCLUDE_DIR} ${OPENGL_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${GLFW_LIBRARY} ${OPENGL_LIBRARIES})
-
-# find_package(GLEW REQUIRED)
-#target_link_libraries(YourTarget GLEW::GLEW)
-#Apparently you can just use the above line instead of adding the directories and libraries as below?
+# GLEW
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/include/glew-2.1.0/include")
+list(APPEND CMAKE_LIBRARY_PATH "${CMAKE_SOURCE_DIR}/include/glew-2.1.0/lib")
+find_package(GLEW REQUIRED)
+target_link_libraries(${PROJECT_NAME} GLEW::GLEW)
 
