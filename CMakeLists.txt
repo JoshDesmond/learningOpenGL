@@ -9,7 +9,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 add_executable(OpenGL ${SOURCE_FILES})
 
-include(FindPkgConfig)
 find_package(libglfw3 REQUIRED)
-include_directories(${GLFW_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${GLFW_LIBRARY})
+find_package(OpenGL REQUIRED)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${GLFW_INCLUDE_DIR} ${OPENGL_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${GLFW_LIBRARY} ${OPENGL_LIBRARIES})

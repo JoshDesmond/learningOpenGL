@@ -1,4 +1,5 @@
 #include <glfw3.h>
+#include <GL/gl.h>
 
 int main(void)
 {
