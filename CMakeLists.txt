@@ -19,13 +19,13 @@ find_package(libglfw3 REQUIRED)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${GLFW_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${GLFW_LIBRARY})
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-target_link_libraries(${PROJECT_NAME} OpenGL::GL)
-
 # GLEW
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/include/glew-2.1.0/include")
 list(APPEND CMAKE_LIBRARY_PATH "${CMAKE_SOURCE_DIR}/include/glew-2.1.0/lib")
 find_package(GLEW REQUIRED)
 target_link_libraries(${PROJECT_NAME} GLEW::GLEW)
+
+# OpenGL
+find_package(OpenGL REQUIRED)
+target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
