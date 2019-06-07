@@ -6,8 +6,7 @@
 #include <fstream>
 #include <sstream>
 
-struct ShaderProgramSource
-{
+struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
@@ -15,8 +14,7 @@ struct ShaderProgramSource
 static ShaderProgramSource ParseShader(const std::string &filepath) {
     std::ifstream stream(filepath);
 
-    enum class ShaderType
-    {
+    enum class ShaderType {
         NONE = -1, VERTEX = 0, FRAGMENT = 1
     };
 
@@ -32,11 +30,9 @@ static ShaderProgramSource ParseShader(const std::string &filepath) {
                 // set mode to fragment
                 type = ShaderType::FRAGMENT;
             }
-        }
-
-        else {
+        } else {
             // creative use of arrays and ShaderType enum to avoid explicitly branching.
-            ss[(int)type] << line << '\n';
+            ss[(int) type] << line << '\n';
         }
     }
 
@@ -104,23 +100,34 @@ int main(void) {
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    float positions[6] = { // Array of three vertex positions
+    float positions[8] = { // Array of three vertex positions
             -.5f, -.5f,
-            0.0f, 0.5f,
-            0.5f, -.5f
+            0.5f, -.5f,
+            0.5f, 0.5f,
+            -.5f, 0.5f
     };
     // Note that a "vertex" in the context of graphics can mean more than just position, like,
     // texture coordinates, normals, colors, binormals, tangents, etc.
+
+    unsigned int indices[] = {
+            0, 1, 2,
+            2, 3, 0
+    };
 
     unsigned int buffer;
     glGenBuffers(1, &buffer); //Instead of a return, gl will modify the buffer variable you provided a pointer to
     // &buffer thus represents a type of ID for a buffer which we can use later.
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     // Notice there is no size specified. Next step is to add data to the buffer.
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void *) 0);
+
+    unsigned int indexBufferObject;
+    glGenBuffers(1, &indexBufferObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << "Vertex Source: " << std::endl;
@@ -136,7 +143,7 @@ int main(void) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3); // "This is the call we use when we don't have an index buffer" ??
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
