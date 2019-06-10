@@ -96,6 +96,10 @@ int main() {
     if (!glfwInit())
         return -1;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (!window) {
@@ -127,6 +131,10 @@ int main() {
             0, 1, 2,
             2, 3, 0
     };
+
+    unsigned int vertexArrayObjectId;
+    glGenVertexArrays(1, &vertexArrayObjectId);
+    glBindVertexArray(vertexArrayObjectId);
 
     unsigned int buffer;
     glGenBuffers(1, &buffer); //Instead of a return, gl will modify the buffer variable you provided a pointer to
