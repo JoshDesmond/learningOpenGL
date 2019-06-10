@@ -6,17 +6,9 @@
 #include <fstream>
 #include <sstream>
 
-static void GLClearError() {
-    while (glGetError() != GL_NO_ERROR) {
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
-    }
-}
-
-static void GLCheckError() {
-    while (GLenum error = glGetError()) {
-        std::cout << "[OpenGL Error] (" << error << ")" << std::endl;
-    }
-}
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -136,26 +128,20 @@ int main() {
     glGenVertexArrays(1, &vertexArrayObjectId);
     glBindVertexArray(vertexArrayObjectId);
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer); //Instead of a return, gl will modify the buffer variable you provided a pointer to
-    // &buffer thus represents a type of ID for a buffer which we can use later.
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    // Notice there is no size specified. Next step is to add data to the buffer.
-    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
+    VertexBuffer vertexBuffer(positions, 8 * sizeof(float));
+    // vb.Bind(); // Not necessary
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void *) 0);
+    // the line of code above is the one that actually binds the GL_ARRAY_BUFFER with the vertexArray
 
-    unsigned int indexBufferObject;
-    glGenBuffers(1, &indexBufferObject);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    IndexBuffer indexBuffer(indices, 6);
 
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
-    std::cout << "Vertex Source: " << std::endl;
-    std::cout << source.VertexSource << std::endl;
-    std::cout << "Fragment Source: " << std::endl;
-    std::cout << source.FragmentSource << std::endl;
+    // std::cout << "Vertex Source: " << std::endl;
+    // std::cout << source.VertexSource << std::endl;
+    // std::cout << "Fragment Source: " << std::endl;
+    // std::cout << source.FragmentSource << std::endl;
 
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     glUseProgram(shader);
@@ -175,9 +161,9 @@ int main() {
 
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
-        GLClearError();
+        indexBuffer.Bind();
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        GLCheckError();
 
         if (r > 1.0f) {
             increment = -0.05f;
