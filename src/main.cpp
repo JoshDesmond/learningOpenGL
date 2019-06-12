@@ -89,9 +89,9 @@ int main() {
     if (!glfwInit())
         return -1;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
@@ -125,10 +125,6 @@ int main() {
             2, 3, 0
     };
 
-    unsigned int vertexArrayObjectId;
-    glGenVertexArrays(1, &vertexArrayObjectId);
-    glBindVertexArray(vertexArrayObjectId);
-
     VertexArray vertexArray;
     VertexBuffer vertexBuffer(positions, 8 * sizeof(float));
     // vertexBuffer.Bind(); // Not necessary
@@ -157,6 +153,8 @@ int main() {
     // Note that the uniform location may be invalid and that might be fine. It might just not be used in the shader
     // and thus automatically removed from it.
     glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f);
+
+    vertexArray.Unbind(); // TODO why is this here?
 
     float r = 0.0f;
     float increment = 0.05f;
